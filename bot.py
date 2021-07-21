@@ -28,13 +28,16 @@ def send(message):
 			dt_now = datetime.now()
 			date_time = dt_now.strftime("%d/%m/%Y, %H:%M:%S")
 
-			bot.send_message(message.chat.id, 'Цена на ' + str(date_time) +': ' + str(price) + '$.')
+			markup = types.InlineKeyboardMarkup(row_width=1)
+			item1 = types.InlineKeyboardButton("Купить", callback_data='buy')
+			markup.add(item1)
+
+			bot.send_message(message.chat.id, 'Цена на ' + str(date_time) +': ' + str(price) + '$.', reply_markup=markup)
 		elif message.text == "Купить акции Tesla":
 			# Btn in msg
 			markup = types.InlineKeyboardMarkup(row_width=2)
 			item1 = types.InlineKeyboardButton("Хорошо", callback_data='good')
 			item2 = types.InlineKeyboardButton("Плохо", callback_data='bad')
-
 			markup.add(item1, item2)
 
 			bot.send_message(message.chat.id, 'Goood', reply_markup=markup)
