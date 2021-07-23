@@ -1,3 +1,5 @@
+from Wallet import Wallet
+from Tesla import Tesla
 import telebot
 import config
 import urllib.request, json
@@ -6,6 +8,7 @@ from datetime import datetime
 from telebot import types
 
 bot = telebot.TeleBot(config.TOKEN)
+wallet = Wallet()
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
@@ -20,11 +23,6 @@ def welcome(message):
 def send(message):
 	if message.chat.type == 'private':
 		if message.text == "Цена акции Tesla":
-			resp = urllib.request.urlopen('https://query2.finance.yahoo.com/v10/finance/quoteSummary/tsla?modules=price')
-			data = json.loads(resp.read())
-			price = data['quoteSummary']['result'][0]['price']['regularMarketPrice']['raw']
-			print(price)
-
 			dt_now = datetime.now()
 			date_time = dt_now.strftime("%d/%m/%Y, %H:%M:%S")
 
@@ -32,28 +30,38 @@ def send(message):
 			item1 = types.InlineKeyboardButton("Купить", callback_data='buy')
 			markup.add(item1)
 
-			bot.send_message(message.chat.id, 'Цена на ' + str(date_time) +': ' + str(price) + '$.', reply_markup=markup)
+			bot.send_message(message.chat.id, 'Цена на ' + str(date_time) +': ' + str(Tesla.get_price()) + '$.', reply_markup=markup)
 		elif message.text == "Купить акции Tesla":
 			# Btn in msg
-			markup = types.InlineKeyboardMarkup(row_width=2)
-			item1 = types.InlineKeyboardButton("Хорошо", callback_data='good')
-			item2 = types.InlineKeyboardButton("Плохо", callback_data='bad')
-			markup.add(item1, item2)
+			# markup = types.InlineKeyboardMarkup(row_width=2)
+			# item1 = types.InlineKeyboardButton("+2", callback_data='pTwo')
+			# item2 = types.InlineKeyboardButton("+5", callback_data='pFive')
+			# markup.add(item1, item2)
 
-			bot.send_message(message.chat.id, 'Goood', reply_markup=markup)
+			bot.send_message(message.chat.id, f'Ваш баланс: {wallet.get_balance()}')
+			bot.send_message(message.chat.id, 'Введите количество акций для покупки')
+			bot.register_next_step_handler(message, get_amount_to_buy)
 		else:
 			bot.send_message(message.chat.id, '...')
 
-# @bot.callback_query_handler(func=lambda call: True)
-# def callback_inline(call):
-# 	try:
-# 		if call.message:
-# 			if call.data == 'good':
-# 				bot.send_message(call.message.chat.id, 'Awesome')
-# 			elif call.data == 'bad':
-# 				bot.send_message(call.message.chat.id, 'Sad')
-# 	except Exception as e:
-# 		print(repr(e))
+
+def get_amount_to_buy(message):
+	if message.text.isdigit() != True:
+		print('string')
+		return
+	tsl = Tesla()
+	tsl.buy(int(message.text), wallet)
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+	try:
+		if call.message:
+			if call.data == 'pTwo':
+				bot.send_message(call.message.chat.id, 'Awesome')
+			elif call.data == 'pFive':
+				bot.send_message(call.message.chat.id, 'Sad')
+	except Exception as e:
+		print(repr(e))
 
 bot.polling(none_stop=True)
 

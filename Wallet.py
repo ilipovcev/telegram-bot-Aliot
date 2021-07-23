@@ -2,15 +2,15 @@ class Wallet(object):
 	def __init__(self):
 		self.money = 5000
 
-	def SpendMoney(self, amount):
+	def spend_money(self, amount):
 		if (self.money - amount) < 0:
-			return -1
+			return False
 		else:
 			self.money -= amount
-			return 0
+			return True
 
-	def AddingBalance(self, amount):
+	def adding_balance(self, amount):
 		self.money += amount
 
-	def GetBalance(self):
+	def get_balance(self):
 		return self.money
