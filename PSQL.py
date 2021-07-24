@@ -49,9 +49,18 @@ class DataBase:
 	def add_stocks(self, id_user, id_stock, amount, price):
 		conn = psycopg2.connect(database=self.name_db,user=self.user_db,password=self.pass_db,host=self.host_db,port=self.port_db)
 		cursor = conn.cursor()
-		cursor.execute("INSERT INTO public.portfolio (id_user, id_stock, amount, purchase_price) VALUES (%s, %s, %s, %s)", [int(id_user), int(id_stock), int(amount), int(price)])
+		cursor.execute("SELECT add_stocks(%s, %s, %s, %s)", [int(id_user), int(id_stock), int(amount), int(price)])
 		conn.commit()
 		conn.close()
 
+	def sold_stock(self, id_user, id_stock, amount):
+		conn = psycopg2.connect(database=self.name_db,user=self.user_db,password=self.pass_db,host=self.host_db,port=self.port_db)
+		cursor = conn.cursor()
+		cursor.execute("SELECT sold_stock(%s, %s, %s)", [int(id_user), int(id_stock), int(amount)])
+		old_price = cursor.fetchall()
+		conn.commit()
+		conn.close()
+		return int(old_price[0][0])
+
 db = DataBase()
-db.add_stocks(0, 0, 4, 111)
+print(db.sold_stock(5, 0, 6))

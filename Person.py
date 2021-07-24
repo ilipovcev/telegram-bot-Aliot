@@ -23,6 +23,11 @@ class Person:
 			return -1
 
 	def sold_stock(self, amount, Stock):
+		stock_price_now = Stock.get_price()
+		stock_id = self.db.get_stock_id(Stock.get_name())
+
+		stock_price_old = self.db.sold_stock(self.id, stock_id, amount)
+		print("Прибыль", stock_price_now / stock_price_old * 100)
 		pass
 
 	def get_balance(self):
