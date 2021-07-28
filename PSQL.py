@@ -62,5 +62,14 @@ class DataBase:
 		conn.close()
 		return int(old_price[0][0])
 
+	def get_portfolio(self, id_user):
+		conn = psycopg2.connect(database=self.name_db,user=self.user_db,password=self.pass_db,host=self.host_db,port=self.port_db)
+		cursor = conn.cursor()
+		cursor.execute("SELECT name, amount, purchase_price FROM portfolio, stock WHERE id_user = %s", [int(id_user)])
+		prtf = cursor.fetchall()
+		conn.commit()
+		conn.close()
+		return prtf
+
 db = DataBase()
-print(db.sold_stock(5, 0, 6))
+print(db.get_portfolio(5)[0][0])

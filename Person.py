@@ -1,3 +1,4 @@
+from Tesla import Tesla
 import PSQL as DB
 
 class Person:
@@ -6,6 +7,7 @@ class Person:
 		self.name = name
 		self.balance = 5000
 		self.db = DB.DataBase()
+		self.find_user()
 
 	def find_user(self):
 		return self.db.find_user(self.id, self.name, self.balance)
@@ -28,14 +30,14 @@ class Person:
 
 		stock_price_old = self.db.sold_stock(self.id, stock_id, amount)
 		print("Прибыль", stock_price_now / stock_price_old * 100)
-		pass
 
 	def get_balance(self):
 		self.balance = self.db.get_user_balance(self.id)
 		return self.balance
 
 	def get_portfolio(self):
-		pass
+		return self.db.get_portfolio(self.id)
 
-p = Person(5, 'name')
-p.buy_stock(2, 1)
+# t = Tesla('TSLA')
+# p = Person(346513677, 'IlIPAa')
+# p.buy_stock(2, t)
