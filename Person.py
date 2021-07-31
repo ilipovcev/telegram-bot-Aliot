@@ -1,12 +1,13 @@
-from Tesla import Tesla
 import PSQL as DB
 
 class Person:
-	def __init__(self, id, name):
-		self.id = id
-		self.name = name
+	def __init__(self):
 		self.balance = 5000
 		self.db = DB.DataBase()
+
+	def set_person(self, id, name):
+		self.id = id
+		self.name = name
 		self.find_user()
 
 	def find_user(self):
@@ -29,7 +30,10 @@ class Person:
 		stock_id = self.db.get_stock_id(Stock.get_name())
 
 		stock_price_old = self.db.sold_stock(self.id, stock_id, amount)
-		print("Прибыль", stock_price_now / stock_price_old * 100)
+		print("Old price", stock_price_old)
+		print("Current price", stock_price_now)
+
+		self.db.update_balance(self.id, self.get_balance() + (stock_price_now - stock_price_old))
 
 	def get_balance(self):
 		self.balance = self.db.get_user_balance(self.id)
@@ -37,6 +41,9 @@ class Person:
 
 	def get_portfolio(self):
 		return self.db.get_portfolio(self.id)
+
+	def get_stock_obj(self, name):
+		pass
 
 # t = Tesla('TSLA')
 # p = Person(346513677, 'IlIPAa')

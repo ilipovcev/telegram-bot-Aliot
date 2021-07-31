@@ -70,6 +70,3 @@ class DataBase:
 		conn.commit()
 		conn.close()
 		return prtf
-
-db = DataBase()
-print(db.get_portfolio(5)[0][0])
