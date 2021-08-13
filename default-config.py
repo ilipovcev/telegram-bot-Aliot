@@ -1,2 +1,2 @@
 # Telegram bot token
-TOKEN = ''
+TOKEN = '<TOKEN>'
